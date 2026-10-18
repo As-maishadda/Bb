@@ -1,43 +1,48 @@
 name: Build dist for cPanel
+
+on:
+  workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
+
     defaults:
-  run:
-    working-directory: gh
+      run:
+        working-directory: gh
 
-steps:
-  - name: Checkout repository
-    uses: actions/checkout@v4
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-  - name: Setup pnpm
-    uses: pnpm/action-setup@v4
-    with:
-      version: 9.14.4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.14.4
 
-  - name: Setup Node.js
-    uses: actions/setup-node@v4
-    with:
-      node-version: 20
-      cache: pnpm
-      cache-dependency-path: gh/pnpm-lock.yaml
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: gh/pnpm-lock.yaml
 
-  - name: Install dependencies
-    run: pnpm install --frozen-lockfile
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
-  - name: Build frontend
-    run: pnpm run build
-    env:
-      VITE_APP_DOMAIN: ${{ vars.VITE_APP_DOMAIN }}
-      VITE_TMDB_READ_API_KEY: ${{ vars.VITE_TMDB_READ_API_KEY }}
-      VITE_CORS_PROXY_URL: ${{ vars.VITE_CORS_PROXY_URL }}
-      VITE_M3U8_PROXY_URL: ${{ vars.VITE_M3U8_PROXY_URL }}
-      VITE_BACKEND_URL: ${{ vars.VITE_BACKEND_URL }}
-      VITE_NORMAL_ROUTER: "true"
+      - name: Build frontend
+        run: pnpm run build
+        env:
+          VITE_APP_DOMAIN: ${{ vars.VITE_APP_DOMAIN }}
+          VITE_TMDB_READ_API_KEY: ${{ vars.VITE_TMDB_READ_API_KEY }}
+          VITE_CORS_PROXY_URL: ${{ vars.VITE_CORS_PROXY_URL }}
+          VITE_M3U8_PROXY_URL: ${{ vars.VITE_M3U8_PROXY_URL }}
+          VITE_BACKEND_URL: ${{ vars.VITE_BACKEND_URL }}
+          VITE_NORMAL_ROUTER: "true"
 
-  - name: Upload dist artifact
-    uses: actions/upload-artifact@v4
-    with:
-      name: dist
-      path: gh/dist/
-      if-no-files-found: error
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: gh/dist/
+          if-no-files-found: error
