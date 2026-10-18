@@ -1,5 +1,10 @@
 name: Build dist for cPanel
-
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: gh
 on:
   workflow_dispatch:
 
