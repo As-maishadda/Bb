@@ -1,0 +1,31 @@
+name: Build dist for cPanel
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.14.4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Build
+        run: pnpm run build
+        env:
+          VITE_APP_DOMAIN: ${{ vars.VITE_APP_DOMAIN }}
+          VITE_TMDB_READ_API_KEY: ${{ vars.VITE_TMDB_READ_API_KEY }}
+          VITE_CORS_PROXY_URL: ${{ vars.VITE_CORS_PROXY_URL }}
+          VITE_M3U8_PROXY_URL: ${{ vars.VITE_M3U8_PROXY_URL }}
+          VITE_BACKEND_URL: ${{ vars.VITE_BACKEND_URL }}
+          VITE_NORMAL_ROUTER: "true"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
